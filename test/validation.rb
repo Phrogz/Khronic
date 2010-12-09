@@ -6,7 +6,7 @@ class TestValidation < MT
     @l1  = Khronic.load(L1DOC)
   end
   def test_valid
-    assert @l1.valid_level?(1)
+    assert @l1.valid_level?(1), "The supplied YAML file must validate"
     assert @l1.valid_level_1?
   end
   def test_missing_synth_spec

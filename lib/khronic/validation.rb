@@ -9,10 +9,18 @@ class Khronic
     return false unless channels.all?{ |name,channel| channel.lines.is_a? Array }
 
     lines = channels.map{ |name,channel| channel.lines.length }.uniq    
-    return false unless lines.length==1
+    unless lines.length==1
+      warn "Disparate numbers of lines: #{lines.inspect}" if $DEBUG
+      return false
+    end
     
     channels.each do |name,channel|
-      
+      channel.lines.each do |slot|
+        if slot && !samples[slot['sample']]
+          warn "Missing sample '#{slot['sample']}'" if $DEBUG
+          return false
+        end
+      end
     end
     
     return true

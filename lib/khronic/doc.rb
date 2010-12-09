@@ -41,4 +41,11 @@ class Khronic
   def add_channel( name, data=nil )
     @channels.add_channel name, data
   end
+  
+  def to_yaml(*args)
+    { 'meta' => @meta,
+      'samples' => @samples,
+      'channels' => @channels.to_hash
+    }.to_yaml(*args)
+  end
 end

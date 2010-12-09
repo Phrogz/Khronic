@@ -3,7 +3,7 @@ require_relative '_helper'
 class TestDoc < MT
   def setup
     @doc = Khronic.new
-    @l1  = Khronic.load(L1DOC)
+    @l1  = Khronic.load L1DOC
   end
   def test_defaults
     assert_equal 120, @doc.bpm
