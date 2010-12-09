@@ -1,8 +1,9 @@
 require_relative '_helper'
 
-class TestDoc < Test
+class TestDoc < MT
   def setup
     @doc = Khronic.new
+    @l1  = Khronic.load(L1DOC)
   end
   def test_defaults
     assert_equal 120, @doc.bpm
@@ -15,21 +16,16 @@ class TestDoc < Test
     assert_equal 160, @doc.bpm
     assert_equal 120, Khronic.new.bpm
   end
-end
-
-class TestL1Doc < Test
-  def setup
-    @doc = Khronic.load('docs/cmajor_l1.yaml')
-  end
   def test_meta
-    assert_equal 1.0, @doc.level
-    assert_equal "Gavin", @doc.author
-    assert_equal "C Major Chord", @doc.title
-    assert_equal 80, @doc.bpm
-    assert_equal 4, @doc.lines_per_beat
+    assert_equal 1.0, @l1.level
+    assert_equal "Gavin", @l1.author
+    assert_equal "C Major Chord", @l1.title
+    assert_equal 80, @l1.bpm
+    assert_equal 4, @l1.lines_per_beat
   end
   def test_samples
-    assert_equal 3, @doc.samples.length
-    assert @doc.samples['synth']
+    assert_equal 3, @l1.samples.length
+    assert @l1.samples['synth']
   end
 end
+

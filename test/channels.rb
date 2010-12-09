@@ -1,6 +1,6 @@
 require_relative '_helper'
 
-class TestChannel < Test
+class TestChannel < MT
   def setup
     @doc = Khronic.new
   end
@@ -27,7 +27,7 @@ class TestChannel < Test
   end
 end
 
-class TestLines < Test
+class TestLines < MT
   def setup
     @doc = Khronic.new
     @lead = @doc.add_channel 'Melody'
