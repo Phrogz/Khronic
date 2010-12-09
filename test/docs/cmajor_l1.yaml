@@ -1,0 +1,91 @@
+--- 
+meta: 
+  author: Gavin
+  title: C Major Chord
+  level: 1.0
+  bpm: 80
+  lines_per_beat: 4
+samples: 
+  snare: snare.wav
+  synth: lead.wav
+  soft:  pad.wav
+channels: 
+  0: 
+    defaults:
+      sample: synth
+    lines: 
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - 
+    - pitch: g4
+    - pitch: g4
+    - pitch: g4
+    - 
+    - pitch: e4
+      volume: 75
+    - pitch: e4
+      volume: 50
+    - pitch: e4
+      volume: 25
+    - 
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+    - pitch: C4
+      volume: 25
+  1: 
+    defaults:
+      sample: soft
+    lines: 
+    - pitch: C2
+      volume: 25
+    - pitch: C2
+      volume: 25
+    - pitch: C2
+      volume: 25
+    - pitch: C2
+      volume: 25
+    - pitch: C2
+      volume: 50
+    - pitch: C2
+      volume: 50
+    - pitch: C2
+      volume: 50
+    - pitch: C2
+      volume: 50
+    - pitch: E2
+      volume: 75
+    - pitch: E2
+      volume: 75
+    - pitch: E2
+      volume: 75
+    - pitch: E2
+      volume: 75
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100
+    - pitch: C2
+      volume: 100

@@ -1,0 +1,26 @@
+4.0 Khronic
+	Channels can play channels
+	Pitch Offset, Time Offset
+	Notes as Offsets in Key, Key Change
+	Tempo Scaling
+	Time in Seconds or lines
+	
+3.0 Meta
+	Arbitrary Channels
+	Unvoiced Channels (used for includes)
+	Channels can play Channels
+	Pitch Offset, Time Offset
+
+2.0 Sparse
+	Arbitrary Channels
+	Play only Samples
+	Explicit start time/sample/pitch/velocity
+	Explicit stop time
+	
+1.0 Flat
+	Explicit Channels
+	Minimum Channels (# channels = max simultaneous voices)
+	Explicit Lines, including silent lines
+	Defaults (e.g. synth) are allowed per channel
+	
+0.0 WAV

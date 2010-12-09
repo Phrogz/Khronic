@@ -1,0 +1,3 @@
+class Khronic::Converter
+
+end
