@@ -26,9 +26,8 @@ class WAV
 		self.new.fill( data, options )
 	end
 
-	#:nodoc:
 	# Used to generate real accessors
-	BYTE_PARAMS = {
+	BYTE_PARAMS = { #:nodoc:
 		"riff_chunk_size" => 4,
 		"fmt_chunk_size"  => 4,
 		"audio_format"    => 2,
@@ -100,13 +99,11 @@ class WAV
 		define_method("#{param}="){ |v| @parameters[param]=v }
 	end
 
-	#:nodoc:
-	def bytes_per_sample
+	def bytes_per_sample #:nodoc:
 		((bits_per_sample / 8.0).ceil * 8).to_i
 	end
 
-	#:nodoc:
-	def data
+	def data #:nodoc:
 		@parameters["data_chunk"]
 	end
 
