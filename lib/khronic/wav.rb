@@ -1,16 +1,21 @@
 # encoding: ASCII-8BIT
 
 class WAV
+	DEFAULT_OPTIONS = {
+		:channels        => 2,
+		:rate            => 441000,
+		:bits_per_sample => 16
+	}
 	def self.from_file( in_filename )
 		self.new.load( in_filename )
 	end
 
-	def self.from_samples( samples, rate=44100 )
-		self.new.generate( samples, rate )
+	def self.from_samples( samples, options={} )
+		self.new.generate( samples, options )
 	end
 
-	def self.from_data( data, channels=2, rate=44100 )
-		self.new.fill( data, channels, rate )
+	def self.from_data( data, options={} )
+		self.new.fill( data, options )
 	end
 
 	BYTE_PARAMS = {
@@ -80,8 +85,11 @@ class WAV
 	end
 
 	# data is existing WAV file data_chunks
-	def fill( data, channels=2, rate=44100 )
-		bits_per_sample = 16
+	def fill( data, options={} )
+		options = DEFAULT_OPTIONS.merge(options)
+		bps      = options[:bits_per_sample]
+		rate     = options[:rate]
+		channels = options[:channels]
 		@parameters["riff_valid"]       = "RIFF"                          #(4b)wants to be "RIFF"
 		@parameters["riff_chunk_size"]  = [(36+data.length)].pack('V')    #Thats the size?
 		@parameters["riff_format"]      = "WAVE"                          #(4b)Wants to be "WAVE"
@@ -91,8 +99,8 @@ class WAV
 		@parameters["channel_count"]    = [channels].pack('v')            #(2b)(1 == mono) (2 == stereo) (>2 = FU)
 		@parameters["sample_rate"]      = [rate].pack('V')                #(4b)22k? 44.1?
 		@parameters["byte_rate"]        = [rate*channels*16*8].pack('V')  #(4b)Uh, byte rate? wtfever. #Wants to be sample_rate*channel_count*bits_per_sample*8 (supposedly)
-		@parameters["block_align"]      = [2*bits_per_sample/8].pack('v') #(2b)yeah, block align. Did I mumble? (== channel_count*bits_per_sample/8)
-		@parameters["bits_per_sample"]  = [bits_per_sample].pack('v')     #(2b)8 bits = 8, 16 bits = 16, etc.
+		@parameters["block_align"]      = [2*bps/8].pack('v')             #(2b)yeah, block align. Did I mumble? (== channel_count*bits_per_sample/8)
+		@parameters["bits_per_sample"]  = [bps].pack('v')                 #(2b)8 bits = 8, 16 bits = 16, etc.
 		@parameters["data_chunkID"]     = "data"                          #(4b)Wants to be "data"
 		@parameters["data_chunk_size"]  = [data.length].pack('V')         #(4b)== NumSamples * NumChannels * BitsPerSample/8 (supposedly)
 		@parameters["data_chunk"]       = data                            #(*b)Read the meat. Read it and weep.
@@ -100,16 +108,14 @@ class WAV
 	end
 	
 	# samples is an array of 16-bit integers, one per channel
-	def generate( samples, rate=44100 )
-		channels = samples.length
-		data = if channels > 10
-			channels = 1
-			samples
-		else
-			# Interleave channels
-			samples.first.zip( *samples[1..-1] ).flatten
+	def generate( samples, options={} )
+		unless options[:channels]
+			options[:channels] = samples.length > 10 ? 1 : 10
 		end
-		fill( data.pack('v*'), channels, rate )
+		unless options[:interleaved] || options[:channels]==1
+			samples = samples.first.zip( *samples[1..-1] )
+		end
+		fill( samples.flatten.pack('v*'), options )
 	end
 	
 	def write( filename )

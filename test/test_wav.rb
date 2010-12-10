@@ -12,6 +12,6 @@ samples2 = (0..(2*44100)).map{ |i|
 }
 
 
-w = WAV.from_samples( [samples1,samples2], 22000 )
+w = WAV.from_samples( [samples1,samples2], :rate=>4000 )
 puts w.debug
 w.write( 'sin.wav' )
