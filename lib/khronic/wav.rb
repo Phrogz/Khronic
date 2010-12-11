@@ -4,7 +4,7 @@ class WAV
 	# Used by the #fill and #generate
 	DEFAULT_OPTIONS = {
 		:channels        => 2,
-		:rate            => 441000,
+		:rate            => 44100,
 		:bits_per_sample => 16
 	}
 
@@ -35,7 +35,7 @@ class WAV
 		"byte_rate"       => 4,
 		"block_align"     => 2,
 		"bits_per_sample" => 2,
-		"data_chunk_size" => 4,
+		"data_chunk_size" => 4
 	}
 
 	# attr_* are for RDoc; replaced with proper readers/writers below
@@ -80,7 +80,7 @@ class WAV
 		if %w[ sample_rate channel_count bits_per_sample ].include?(param)
 			define_method "#{param}=" do |value|
 				@parameters[param] = [value].pack(v)
-				byte_rate   = sample_rate*channel_count*bytes_per_sample
+				byte_rate   = sample_rate * channel_count * bytes_per_sample
 				block_align = channel_count * bytes_per_sample
 			end
 		else
@@ -111,10 +111,10 @@ class WAV
 	def initialize
 		# Treat blind reads into unset values as an invalid sigil
 		@parameters = Hash.new{-1}
-		@parameters["riff_valid"]       = "RIFF" #(4b)wants to be "RIFF"
-		@parameters["riff_format"]      = "WAVE" #(4b)Wants to be "WAVE"
-		@parameters["fmt_chunkID"]      = "fmt " #(4b)Wants to be "fmt " <-- note the space
-		@parameters["data_chunkID"]     = "data" #(4b)Wants to be "data"
+		# @parameters["riff_valid"]       = "RIFF" #(4b)wants to be "RIFF"
+		# @parameters["riff_format"]      = "WAVE" #(4b)Wants to be "WAVE"
+		# @parameters["fmt_chunkID"]      = "fmt " #(4b)Wants to be "fmt " <-- note the space
+		# @parameters["data_chunkID"]     = "data" #(4b)Wants to be "data"
 	end
 
 	# Replace the contents of this wav from a file on disk.
@@ -194,7 +194,9 @@ class WAV
 			# http://www.microsoft.com/whdc/device/audio/multichaud.mspx
 			options[:channels] = samples.length > 18 ? 1 : samples.length
 		end
-		unless options[:interleaved] || options[:channels]==1
+		if samples.length==1
+			samples = samples.first
+		elsif !options[:interleaved] && options[:channels]!=1
 			samples = samples.first.zip( *samples[1..-1] )
 		end
 		fill( samples.flatten.pack('v*'), options )
@@ -250,8 +252,42 @@ class WAV
 	end
 
 	# How many samples there are (or should be) per channel
-	def samples
+	def num_samples
 		data_chunk_size / channels / bytes_per_sample
 	end
 
+	def samples
+		v = bytes_per_sample==4 ? 'V*' : 'v*'
+		max = 2**bytes_per_sample-1 
+		mid = 2**(bytes_per_sample-1) 
+		# Convert from unsigned to signed
+		# http://groups.google.com/group/comp.lang.ruby/tree/browse_frm/thread/2e69fc2ae8f0fbde/482e06ae607c7aa9?rnum=1&q=to_signed&_done=%2Fgroup%2Fcomp.lang.ruby%2Fbrowse_frm%2Fthread%2F2e69fc2ae8f0fbde%2F91fa6816806d2cab%3Flnk%3Dgst%26q%3Dto_signed%26#doc_482e06ae607c7aa9
+		@parameters["data_chunk"].unpack(v).map{|n| (n >= mid) ? -((n ^ max) + 1) : n }
+	end
+
+	def scale( factor=1.0, options={} )
+		factor = factor.to_f
+		source = samples
+		channels = if (c=channel_count) > 1
+			source.group_by.with_index{ |s,i| i%c }
+		else
+			[ source ]
+		end.map do |samps|
+			Array.new (source.length*factor).round do |i|
+				samps[(i/factor).floor]
+			end
+		end
+		channels = channels.first if c==1
+		if options[:samples_only]
+			channels
+		else
+			self.class.from_samples channels
+		end
+	end
+
+	def pitch( note='C4', options={} )
+		offsets = Hash[ %w[ C C# D D# E F F# G G# A A# B ].map.with_index{ |c,i| [c,i] } ]
+		offset  = 12*note[/\d+/].to_i + offsets[ note.upcase[/\D+/] ] - 48 #C4
+		scale 1.0/(2**(offset/12.0)), options
+	end
 end
