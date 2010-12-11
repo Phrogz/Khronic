@@ -22,30 +22,30 @@ class Khronic
     new( source )
   end
   
-  attr_reader :samples, :channels
+  attr_reader :samples, :tracks
   
   def initialize( yaml=nil )
     if yaml
       doc = YAML.load(yaml)
       @meta = doc['meta'] || {}
       @samples  = doc['samples']
-      @channels = Channels.new doc['channels']
+      @tracks = Tracks.new doc['tracks']
     else
       @meta     = {}
       @samples  = {}
-      @channels = Channels.new
+      @tracks = Tracks.new
     end
     HashInherit.from DEFAULTS, @meta
   end
   
-  def add_channel( name, data=nil )
-    @channels.add_channel name, data
+  def add_track( name, data=nil )
+    @tracks.add_track name, data
   end
   
   def to_yaml(*args)
     { 'meta' => @meta,
       'samples' => @samples,
-      'channels' => @channels.to_hash
+      'tracks' => @tracks.to_hash
     }.to_yaml(*args)
   end
 end

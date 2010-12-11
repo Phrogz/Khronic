@@ -9,7 +9,7 @@ class TestDoc < MT
     assert_equal 120, @doc.bpm
     assert_nil @doc.level
     assert_empty @doc.samples
-    assert_empty @doc.channels
+    assert_empty @doc.tracks
   end
   def test_mutable_meta
     @doc.bpm = 160

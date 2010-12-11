@@ -9,7 +9,7 @@ samples:
   snare: snare.wav
   synth: lead.wav
   soft:  pad.wav
-channels: 
+tracks: 
   0: 
     defaults:
       sample: synth
