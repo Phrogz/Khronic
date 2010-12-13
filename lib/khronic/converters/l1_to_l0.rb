@@ -11,7 +11,6 @@ Khronic.to_convert_between 1, :wav do
 	loop_channels_by_sample_and_pitch = Hash.new do |h,sample|
 		h[sample]=Hash.new do |h,pitch|
 			wav_channels = wavs[sample].pitch( pitch, samples_only:true, channels:output_channels )
-			p wav_channels
 			wav_channels.each{ |channel| channel.extend ArrayLoops }
 			h[pitch] = wav_channels
 		end
