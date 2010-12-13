@@ -6,9 +6,9 @@ class Khronic
 	def self.to_convert_between( from, to, &block )
 		@converters_by_versions[ [from, to] ] = block
 	end
-	def convert( opts )
-		unless converter = self.class.converters_by_versions[ [from, to] ]
-			raise "No converter found to go from level #{from} to #{to}" 
+	def convert_to( level )
+		unless converter = self.class.converters_by_versions[ [self.level, level] ]
+			raise "No converter found to go from level #{self.level} to #{level}" 
 		end
 		self.instance_eval &converter
 	end
