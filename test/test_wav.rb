@@ -46,4 +46,20 @@ class TestWAV < MT
 			end
 		}
 	end
+
+	def	test_pitch
+		channels = [ [1]*20, [-1]*20 ]
+		stereo  = W.from_samples channels
+		stereo2 = stereo.pitch 'c4'
+		assert_equal channels.length, stereo2.channel_count
+
+		channels1 = stereo.pitch 'c4', samples_only:true
+		assert_equal channels.length, channels1.length
+
+		channels2 = stereo.pitch 'c4', samples_only:true, channels:1
+		assert_equal 1, channels2.length
+
+		channels3 = stereo.pitch 'c4', samples_only:true, channels:2
+		assert_equal 2, channels3.length
+	end
 end
