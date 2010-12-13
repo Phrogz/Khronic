@@ -15,4 +15,4 @@ class Khronic
 end
 
 converters = Dir[File.join File.dirname(__FILE__), 'converters', '*.rb']
-require_relative *converters
+require *converters.map{ |p| File.expand_path(p) }
