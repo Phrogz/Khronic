@@ -1,0 +1,65 @@
+--- 
+meta: 
+  level: 1
+  wav_paths:
+    - wavs
+samples: 
+  a: 1_2.wav
+  b: 10_20.wav
+  c: 100_200.wav
+  
+tracks: 
+  a: 
+    defaults:
+      sample: a
+    data: 
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+  b: 
+    defaults:
+      sample: b
+    data: 
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+  c: 
+    defaults:
+      sample: c
+    data: 
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
+    - pitch: C4
