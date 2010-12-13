@@ -16,13 +16,13 @@ Khronic.to_convert_between 1, :wav do
 		end
 	end
 
-	blank_channels = (1..output_channels).map{ [0] * samples_per_line }
+	blank_slot = (1..output_channels).map{ [0] * samples_per_line }
 
 	track_samples = tracks.map do |name,track|
 		last_sample = nil
 		index = 0
 		track.data.map do |slot|
-			sample_name = slot['sample']
+			sample_name = slot && slot['sample']
 			if sample_name != last_sample
 				index = 0
 				last_sample = sample_name
@@ -41,12 +41,13 @@ Khronic.to_convert_between 1, :wav do
 		end.transpose.map{ |x| x.flatten }
 	end.transpose
 	
-	p track_samples
+	channels = track_samples.map{ |channel|
+		channel.shift.zip( *channel ).map{ |samples|
+			sum = 0
+			samples.each{ |s| sum += s }
+			sum / samples.length
+		}
+	}
 
-	# channels = track_samples.map{ |channel|
-	# 	
-	# }
-	# 
-	# samples = Khronos::WAV.merge_tracks track_samples
-	
+	Khronic::WAV.from_samples channels
 end
