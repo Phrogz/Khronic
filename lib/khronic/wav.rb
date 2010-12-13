@@ -291,7 +291,7 @@ class Khronic::WAV
 				if chs.length==1 
 					chs.push chs[0]
 				else
-					chs = chs[0.2]
+					chs = chs[0,2]
 				end
 		end
 		
