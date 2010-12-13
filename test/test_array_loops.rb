@@ -19,7 +19,7 @@ class TestArrayLoops < MT
 	
 	def test_odds
 		@odds   = [1,3,5,7,9]
-		@odds.extend   ArrayLoops
+		@odds.extend ArrayLoops
 		
 		assert_equal [1,3,5,7,9], @odds.loop(         for:5 )
 		assert_equal [7,9],       @odds.loop( from:3, for:2 )
@@ -30,5 +30,14 @@ class TestArrayLoops < MT
 
 		wrap2 = [7,9] + @odds + @odds + [1,3]
 		assert_equal wrap2, @odds.loop( from:3, for:14 )
+	end
+	
+	def test_bounds
+		@a = (0..9).to_a
+		@a.extend ArrayLoops
+		
+		assert_equal [0,1,2], @a.loop( from:0,   for:3 )
+		assert_equal [0,1,2], @a.loop( from:10,  for:3 )
+		assert_equal [0,1,2], @a.loop( from:100, for:3 )
 	end
 end

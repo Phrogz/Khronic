@@ -1,12 +1,13 @@
 module ArrayLoops
 	def loop( opts={} )
-		start = opts[:from] || 0
-		close = start + (opts[:for] || length)
+		l = self.length
+		start = (opts[:from] || 0 ) % l
+		close = start + (opts[:for] || l)
 		result = []
-		while close >= length
+		while close >= l
 			result.concat self[start..-1]
 			start = 0
-			close -= length
+			close -= l
 		end
 		result.concat self[start...close]
 	end
