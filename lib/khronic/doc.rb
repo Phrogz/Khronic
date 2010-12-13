@@ -1,9 +1,11 @@
 require 'yaml'
 
 class Khronic
-	META_ATTRS = %w[ level title author bpm ]
+	META_ATTRS = %w[ level title author bpm channels rate ]
 	DEFAULTS = {
-		'bpm' => 120
+		'bpm'      => 120,
+		'channels' => 2,
+		'rate'     => 44100
 	}
 
 	META_ATTRS.each do |a|
