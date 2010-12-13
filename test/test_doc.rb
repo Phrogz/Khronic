@@ -1,4 +1,4 @@
-require_relative '_helper'
+require_relative 'helper'
 
 class TestDoc < MT
   def setup

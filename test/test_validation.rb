@@ -1,4 +1,4 @@
-require_relative '_helper'
+require_relative 'helper'
 
 class TestValidation < MT
   def setup
@@ -25,4 +25,8 @@ class TestValidation < MT
     @l1.tracks[0].data.pop
     refute @l1.valid_level_1?, "Validation must ensure that all tracks have the same number of data"
   end
+	def test_samples
+		@l1.samples['no'] = 'bogus'
+		refute @l1.valid_level_1?, "Validation must ensure that all samples have valid files"
+	end
 end

@@ -1,4 +1,4 @@
-require_relative '_helper'
+require_relative 'helper'
 
 class TestArrayLoops < MT
 	def test_evens

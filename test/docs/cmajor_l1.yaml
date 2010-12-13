@@ -2,15 +2,17 @@
 meta: 
   author: Gavin
   title: C Major Chord
-  level: 1.0
+  level: 1
   bpm: 80
   lines_per_beat: 4
   wav_paths:
-    - ../../wavs
+    - wavs
+  channels: 2
 samples: 
   snare: snare.wav
   synth: lead.wav
   soft:  pad.wav
+  
 tracks: 
   0: 
     defaults:
