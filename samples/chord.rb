@@ -20,15 +20,21 @@ module Enumerable
 	end
 end
 
-def chord( wav, *notes )
-	samples = notes.map{ |n| wav.pitch(n,samples_only:true) }
-	chord = samples.shift.zip(*samples).map{ |ss| ss.sum.to_f / ss.length }.map(&:round)
+require 'pp'
+
+def chord( wav, notes )
+	notes = notes.split(/\s+/)
+	notes_chs = notes.map{ |n| wav.pitch( n, samples_only:true ) }
+	chord = notes_chs.transpose.map do |channel_notes|
+		channel_notes.shift.zip(*channel_notes).map{ |ss| ss.sum.to_f / ss.length }.map(&:round)
+	end
 	Khronic::WAV.from_samples( chord )
 end
 
 if __FILE__==$0
-	pad = Khronic::WAV.from_file( '../wavs/lead.wav' )
-	chord(pad, 'f#3','d4','f#4','a4','d5').write( 'd#pad.wav' )
+	pad = Khronic::WAV.from_file( 'docs/wavs/lead.wav' )
+	p pad
+	chord(pad, 'c4 g4' ).write( 'cgpad.wav' )
 end
 __END__
 notes = [C3,C4,E4,G3].map{ |pitch|
