@@ -89,8 +89,6 @@ class Khronic::WAV
 			end
 		end
 	end
-	alias_method :channels, :channel_count
-	alias_method :channels=, :channel_count=
 	private :byte_rate=, :block_align=, :data_chunk_size=, :riff_chunk_size=
 	
 	%w[ riff_valid riff_format fmt_chunkID data_chunkID ].each do |param|
@@ -100,7 +98,7 @@ class Khronic::WAV
 
 	# bits_per_sample padded up to the nearest byte
 	def bytes_per_sample
-		((bits_per_sample / 8.0).ceil * 8).to_i
+		(bits_per_sample / 8.0).ceil
 	end
 
 	# The raw data of the wav; set using #generate or #fill
@@ -258,36 +256,60 @@ class Khronic::WAV
 
 	def samples
 		v = bytes_per_sample==4 ? 'V*' : 'v*'
-		max = 2**bytes_per_sample-1 
-		mid = 2**(bytes_per_sample-1) 
+		bits = bytes_per_sample*8
+		max = 2**bits - 1 
+		mid = 2**(bits-1) 
 		# Convert from unsigned to signed
-		# http://groups.google.com/group/comp.lang.ruby/tree/browse_frm/thread/2e69fc2ae8f0fbde/482e06ae607c7aa9?rnum=1&q=to_signed&_done=%2Fgroup%2Fcomp.lang.ruby%2Fbrowse_frm%2Fthread%2F2e69fc2ae8f0fbde%2F91fa6816806d2cab%3Flnk%3Dgst%26q%3Dto_signed%26#doc_482e06ae607c7aa9
-		@parameters["data_chunk"].unpack(v).map{|n| (n >= mid) ? -((n ^ max) + 1) : n }
+		@parameters["data_chunk"].unpack(v).map{|n| (n >= mid) ? (n-max-1) : n }
+	end
+	
+	def channels
+		c = channel_count
+		s = samples
+		if c==1 # optimization
+			[s]
+		else
+			s.group_by.with_index{ |s,i| i%c }.values_at(*0...c)
+		end
 	end
 
 	def scale( factor=1.0, options={} )
 		factor = factor.to_f
-		source = samples
-		channels = if (c=channel_count) > 1
-			source.group_by.with_index{ |s,i| i%c }
-		else
-			[ source ]
-		end.map do |samps|
-			Array.new (samps.length*factor).round do |i|
-				samps[(i/factor).floor]
+		chs = channels
+		
+		# Naive no-interpolation
+		chs.map! do |channel|
+			Array.new (channel.length*factor).round do |i|
+				channel[(i/factor).floor]
 			end
+		end unless factor==1.0
+		
+		# Drop or add channels to get to a specified amount
+		case options[:channels]
+			when 1 then chs = chs[0,1]
+			when 2 then 
+				if chs.length==1 
+					chs.push chs[0]
+				else
+					chs = chs[0.2]
+				end
 		end
-		channels = channels.first if c==1
+		
 		if options[:samples_only]
-			channels
+			chs
 		else
-			self.class.from_samples channels
+			self.class.from_samples chs
 		end
 	end
 
 	def pitch( note='C4', options={} )
-		offsets = Hash[ %w[ C C# D D# E F F# G G# A A# B ].map.with_index{ |c,i| [c,i] } ]
-		offset  = 12*note[/\d+/].to_i + offsets[ note.upcase[/\D+/] ] - 48 #C4
-		scale 1.0/(2**(offset/12.0)), options
+		multiplier = if note.upcase=='C4'
+			1.0
+		else
+			offsets = Hash[ %w[ C C# D D# E F F# G G# A A# B ].map.with_index{ |c,i| [c,i] } ]
+			offset  = 12*note[/\d+/].to_i + offsets[ note.upcase[/\D+/] ] - 48 #C4
+			1.0/(2**(offset/12.0))
+		end
+		scale multiplier, options
 	end
 end
