@@ -20,18 +20,16 @@ module Enumerable
 	end
 end
 
-pad = WAV.from_file( '../wavs/lead.wav' )
-
 def chord( wav, *notes )
 	samples = notes.map{ |n| wav.pitch(n,samples_only:true) }
 	chord = samples.shift.zip(*samples).map{ |ss| ss.sum.to_f / ss.length }.map(&:round)
-	WAV.from_samples( chord )
+	Khronic::WAV.from_samples( chord )
 end
 
-chord(pad, 'f#3','d4','f#4','a4','d5').write( 'd#pad.wav' )
-
-p 'yes'
-
+if __FILE__==$0
+	pad = Khronic::WAV.from_file( '../wavs/lead.wav' )
+	chord(pad, 'f#3','d4','f#4','a4','d5').write( 'd#pad.wav' )
+end
 __END__
 notes = [C3,C4,E4,G3].map{ |pitch|
 	(0...4*RATE).map{ |i|
@@ -40,7 +38,7 @@ notes = [C3,C4,E4,G3].map{ |pitch|
 }
 chord = notes.shift.zip(*notes).map{ |notes| notes.sum.to_f / notes.length }.map(&:round)
 
-k = WAV.from_file( '../wavs/kick.wav' )
+k = Khronic::WAV.from_file( '../wavs/kick.wav' )
 
 kick = k.samples
 (0...RATE/4).each{ |i| kick[i] ||= 0 }
@@ -50,7 +48,7 @@ samples = chord.zip(kick).map{ |samples| samples.sum.to_f / samples.length }.map
 
 
 
-w = WAV.from_samples( samples, rate:RATE )
+w = Khronic::WAV.from_samples( samples, rate:RATE )
 p k,w
 w.write( 'chordkick_44k.wav' )
 

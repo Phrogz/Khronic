@@ -1,6 +1,6 @@
 # encoding: ASCII-8BIT
-
-class WAV
+class Khronic; end
+class Khronic::WAV
 	# Used by the #fill and #generate
 	DEFAULT_OPTIONS = {
 		:channels        => 2,
@@ -273,7 +273,7 @@ class WAV
 		else
 			[ source ]
 		end.map do |samps|
-			Array.new (source.length*factor).round do |i|
+			Array.new (samps.length*factor).round do |i|
 				samps[(i/factor).floor]
 			end
 		end

@@ -1,0 +1,5 @@
+require_relative 'test_doc'
+require_relative 'test_array_loops'
+require_relative 'test_tracks'
+require_relative 'test_validation'
+require_relative 'test_converters'

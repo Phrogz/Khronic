@@ -5,6 +5,8 @@ meta:
   level: 1.0
   bpm: 80
   lines_per_beat: 4
+  wav_paths:
+    - ../../wavs
 samples: 
   snare: snare.wav
   synth: lead.wav
@@ -13,7 +15,7 @@ tracks:
   0: 
     defaults:
       sample: synth
-    lines: 
+    data: 
     - pitch: C4
     - pitch: C4
     - pitch: C4
@@ -48,7 +50,7 @@ tracks:
   1: 
     defaults:
       sample: soft
-    lines: 
+    data: 
     - pitch: C2
       volume: 25
     - pitch: C2
