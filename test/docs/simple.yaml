@@ -1,6 +1,9 @@
 --- 
 meta: 
   level: 1
+  bpm: 60
+  lines_per_beat: 1
+  rate: 10
   wav_paths:
     - wavs
 samples: 
@@ -14,52 +17,19 @@ tracks:
       sample: a
     data: 
     - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
+    -
+    - pitch: C5
   b: 
     defaults:
       sample: b
     data: 
     - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
+    -
+    - pitch: C5
   c: 
     defaults:
       sample: c
     data: 
     - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
-    - pitch: C4
+    -
+    - pitch: C5
