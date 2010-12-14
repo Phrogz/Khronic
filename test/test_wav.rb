@@ -62,4 +62,15 @@ class TestWAV < MT
 		channels3 = stereo.pitch 'c4', samples_only:true, channels:2
 		assert_equal 2, channels3.length
 	end
+	
+	# http://en.wikipedia.org/wiki/Piano_key_frequencies
+	def test_frequency_creation
+		assert_in_delta 440.000, W.note_frequency('A4')
+		assert_in_delta 440.000, W.note_frequency('a4')
+		assert_in_delta 880.000, W.note_frequency('A5')
+		assert_in_delta 311.127, W.note_frequency('D#4')
+		assert_in_delta 261.626, W.note_frequency('C4')
+		assert_in_delta  69.296, W.note_frequency('C#2')
+		assert_in_delta  69.296, W.note_frequency('Db2')
+	end
 end

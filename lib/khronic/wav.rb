@@ -13,6 +13,9 @@ class Khronic::WAV
 	def self.from_file( filename )
 		self.new.load( filename )
 	end
+	class << self
+		alias_method :load, :from_file
+	end
 
 	# Equivalent to `WAV.new.generate( samples, options )`.
 	# See #generate for more details.
@@ -24,6 +27,70 @@ class Khronic::WAV
 	# See #fill for more details.
 	def self.from_data( data, options={} )
 		self.new.fill( data, options )
+	end
+	
+	# Used internally by WAV.sine and WAV.square. Defaults are:
+	#   :frequency:       261.626 (Hz)
+	#   :note:            'C4' (alternative to frequency)
+	#   :volume:          100
+	#   :seconds:         1
+	#   :rate:            44100
+	#   :bits_per_sample: 16
+	def self.generator_options(options)
+		o = {
+			frequency:       C4,
+			volume:          100,
+			seconds:         1,
+			rate:            44100,
+			bits_per_sample: 16,
+			channels:        1
+		}.merge(options)
+		freq = o[:note] ? self.note_frequency(o[:note]) : o[:frequency]
+		{
+			o:       o,
+			amp:     (2**(o[:bits_per_sample]-1)-1) * o[:volume] / 100.0,
+			period:  o[:rate] / o[:frequency].to_f,
+			samples: (o[:seconds].to_f * o[:rate]).round		
+		}
+	end	
+	private_class_method :generator_options
+
+	# Generate a sin wave. See #generator_options for the default options.
+	def self.sine( options={} )
+		o = generator_options(options)
+		a = o[:amp]
+		p = o[:period] / (Math::PI*2)
+		samples = (0...o[:samples]).map{ |i| (a * Math.sin( i / p )).round }
+		from_samples samples, o[:o]
+	end
+
+	# Generate a square wave. See #generator_options for the default options.
+	def self.square( options={} )
+		o = generator_options(options)
+		a = o[:amp].round
+		p = o[:period] / 2
+		samples = (0...o[:samples]).map{ |i| a * (2 * ((i / p).round % 2) - 1).round }
+		from_samples samples, o[:o]
+	end
+
+	# Hz
+	A4 = 440.000
+	
+	C4 = 261.626
+	
+	# Offsets within an octave
+	NOTES = Hash[ %w[ C C# D D# E F F# G G# A A# B ].map.with_index{ |c,i| [c.downcase,i] } ]
+	
+	{ 'Db'=>'C#', 'Eb'=>'D#', 'Gb'=>'F#', 'Ab'=>'G#', 'Bb'=>'A#' }.each do |flat,sharp|
+		NOTES[flat.downcase] = NOTES[sharp.downcase]
+	end
+
+	# Given a note such as 'A#3' give the frequency in Hz (using an even-tempered scale)
+	def self.note_frequency( note )
+		key    = note.downcase[/\D+/]
+		octave = note[/\d+/].to_i
+		semitones = octave*12 + NOTES[key] - 57 #57 is A4's offset
+		A4 * (2**(semitones/12.0)) # Equal temperment
 	end
 
 	BYTE_PARAMS = {
